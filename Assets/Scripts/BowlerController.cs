@@ -87,6 +87,9 @@ public class BowlerController : MonoBehaviour {
 
 				GameObject ball = Instantiate (bowlingBall, spawnLoc.position, Quaternion.identity);
 				ball.GetComponent<Rigidbody> ().velocity = transform.TransformDirection (Vector3.forward) * launchSpeed;
+				Camera.main.transform.parent = ball.transform.GetChild (0);
+			//	Camera.main.transform.localPosition = Vector3.zero;
+			//	Camera.main.transform.localRotation = Quaternion.identity;
 
 				state = BowlerState.Idle;
 				charging = false;

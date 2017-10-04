@@ -3316,7 +3316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf26614dc0fa0464fb6a29d8a1c2265d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBeforeScoreCount: 1.5
+  timeBeforeScoreCount: 3
 --- !u!1 &1381898396
 GameObject:
   m_ObjectHideFlags: 0

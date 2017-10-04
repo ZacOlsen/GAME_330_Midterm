@@ -2,48 +2,75 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ScoreCalculator : MonoBehaviour {
 
+	[SerializeField] private int currentFrame = 0;
 	[SerializeField] private float timeBeforeScoreCount = 1.5f;
-	private float timeOfOut = float.MaxValue;
 
 	public const int NUM_OF_FRAMES = 10;
 	private GameObject scoreBoard;
 
-	private BowlingFrame first;
+	private static BowlingFrame first;
+	private bool firstShot = true;
 	private LaneReset laneReset;
+
+	[SerializeField] private Transform camLoc = null;
+	private BowlerController bc;
 
 	void Start () {
 		
 		scoreBoard = GameObject.Find ("Score Board");
+		bc = GameObject.Find ("Player").GetComponent<BowlerController> ();
 
-		first = new BowlingFrame (1);
-		BowlingFrame current = first;
+		if (first == null) {
+			first = new BowlingFrame (1);
+			BowlingFrame current = first;
 
-		for (int i = 2; i <= NUM_OF_FRAMES; i++) {
-			current.next = new BowlingFrame (i);
-			current = current.next;
+			for (int i = 2; i <= NUM_OF_FRAMES; i++) {
+				current.next = new BowlingFrame (i);
+				current = current.next;
+			}
+		}
+
+		for (int i = 1; i < currentFrame; i++) {
+			GetScore (i);
 		}
 
 		laneReset = GameObject.Find ("Lane Cleaner").GetComponent<LaneReset> ();
 	}
 
-	void FixedUpdate () {
-
-	//	if (Time.time - timeOfOut > timeBeforeScoreCount) {
-	//		GetScore (0);
-	//	}
-	}
-
 	void GetScore (int frameNum) {
 
 		BowlingFrame frame = GetFrame (frameNum);
-		Transform trans = scoreBoard.transform.GetChild (frameNum);
+		Transform trans = scoreBoard.transform.GetChild (frameNum - 1);
 
-		trans.GetChild (0).GetComponent<Text> ().text = "" + frame.shot1Pins;
-		trans.GetChild (1).GetComponent<Text> ().text = "" + frame.shot2Pins;
-		trans.GetChild (2).GetComponent<Text> ().text = "" + frame.shot1Pins + frame.shot2Pins;
+		trans.GetChild (0).GetComponent<Text> ().text = frame.GetShot1 ();
+		trans.GetChild (1).GetComponent<Text> ().text = frame.GetShot2 ();
+		trans.GetChild (2).GetComponent<Text> ().text = "" + frame.CalculateScore ();
+	}
+
+	public void ReceivePinsDown (int pinsDown) {
+
+		BowlingFrame frame = GetFrame (currentFrame);
+
+		if (firstShot) {
+			frame.shot1Pins = pinsDown;
+			firstShot = false;
+		} else {
+			frame.shot2Pins = pinsDown - frame.shot1Pins;
+			currentFrame++;
+			SceneManager.LoadScene (currentFrame);
+			return;
+		}
+
+		Camera.main.transform.parent = camLoc;
+		Camera.main.transform.localPosition = Vector3.zero;
+		Camera.main.transform.localRotation = Quaternion.identity;
+
+		GetScore (currentFrame);
+		bc.ResetShot ();
 	}
 
 	private BowlingFrame GetFrame (int frame) {
@@ -57,14 +84,13 @@ public class ScoreCalculator : MonoBehaviour {
 		return current;
 	}
 
-	public void StartLaneReset () {
+	private void StartLaneReset () {
 		laneReset.ClearLane ();
 	}
 
 	void OnTriggerEnter (Collider col) {
 
 		if (col.CompareTag ("Ball")) {
-			timeOfOut = Time.time;
 			Invoke ("StartLaneReset", timeBeforeScoreCount);
 		}
 	}

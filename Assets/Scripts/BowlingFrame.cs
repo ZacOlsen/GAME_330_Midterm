@@ -15,8 +15,26 @@ public class BowlingFrame {
 		frameNum = frame;
 	}
 
-	public void CalculateScore () {
+	public string GetShot1 () {
 
+		if (shot1Pins == 10) {
+			return "X";
+		}
+
+		return "" + shot1Pins;
+	}
+
+	public string GetShot2 () {
+
+		if (shot2Pins + shot1Pins == 10) {
+			return "/";
+		}
+
+		return "" + shot2Pins;
+	}
+
+	public int CalculateScore () {
+		return shot1Pins + shot2Pins;
 	}
 
 	public int GetScore () {

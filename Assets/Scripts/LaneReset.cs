@@ -12,6 +12,9 @@ public class LaneReset : MonoBehaviour {
 
 	private bool topReached;
 
+	private ScoreCalculator sc;
+	private int pinsDowned;
+
 	void Start () {
 
 		startY = transform.position.y;
@@ -19,6 +22,8 @@ public class LaneReset : MonoBehaviour {
 		pins = new List<GameObject> ();
 		triggerBox = GetComponent<BoxCollider> ();
 		triggerBox.enabled = false;
+
+		sc = GameObject.Find ("End Zone").GetComponent<ScoreCalculator> ();
 	}
 	
 	void FixedUpdate () {
@@ -26,7 +31,11 @@ public class LaneReset : MonoBehaviour {
 		if (triggerBox.enabled) {
 
 			if (!topReached) {
-				transform.position = new Vector3 (transform.position.x, Mathf.Lerp (transform.position.y, startY + moveUpHeight, .1f), transform.position.z);
+
+				float dist = startY + moveUpHeight - transform.position.y;
+
+				transform.position = new Vector3 (transform.position.x, Mathf.Lerp (transform.position.y, 
+					startY + moveUpHeight, .1f / dist), transform.position.z);
 
 				if (transform.position.y + .1f >= startY + moveUpHeight) {
 					topReached = true;
@@ -34,15 +43,21 @@ public class LaneReset : MonoBehaviour {
 				}
 
 			} else {
-				transform.position = new Vector3 (transform.position.x, Mathf.Lerp (transform.position.y, startY, .05f), transform.position.z);
 
-				if (transform.position.y + .1f <= startY) {
+				float dist = transform.position.y - startY;
+
+				transform.position = new Vector3 (transform.position.x, Mathf.Lerp (transform.position.y, 
+					startY, .05f / dist), transform.position.z);
+
+				if (transform.position.y - .1f <= startY) {
 					topReached = false;
 					triggerBox.enabled = false;
 
 					for (int i = 0; i < pins.Count; i++) {
 						pins [i].GetComponent<Rigidbody> ().isKinematic = false;
 					}
+
+					sc.ReceivePinsDown (10 - pins.Count);
 				}
 			}
 		}
@@ -58,11 +73,9 @@ public class LaneReset : MonoBehaviour {
 
 		GameObject[] downedPins = GameObject.FindGameObjectsWithTag ("Pin");
 
-		Debug.Log (pins.Count);
-
 		for (int i = 0; i < downedPins.Length; i++) {
 			if (!pins.Contains (downedPins [i])) {
-				downedPins [i].GetComponent<Collider> ().enabled = false;
+				downedPins [i].GetComponent<Collider> ().isTrigger = true;
 			}
 		}
 	}
@@ -72,6 +85,8 @@ public class LaneReset : MonoBehaviour {
 		if (col.CompareTag ("Pin")) {
 			pins.Add (col.gameObject);
 		}
+
+		col.transform.rotation = Quaternion.identity;
 
 		col.transform.parent = transform;
 		col.GetComponent<Rigidbody> ().isKinematic = true;

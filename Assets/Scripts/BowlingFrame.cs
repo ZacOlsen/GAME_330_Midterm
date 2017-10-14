@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class BowlingFrame {
 
-	public int shot1Pins = 0;
-	public int shot2Pins = 0;
+	public int shot1Pins = -1;
+	public int shot2Pins = -1;
 
 	public readonly int frameNum = 0;
 
@@ -21,6 +21,10 @@ public class BowlingFrame {
 			return "X";
 		}
 
+		if (shot1Pins == -1) {
+			return "";
+		}
+
 		return "" + shot1Pins;
 	}
 
@@ -30,10 +34,50 @@ public class BowlingFrame {
 			return "/";
 		}
 
+		if (shot2Pins == -1) {
+			return "";
+		}
+
 		return "" + shot2Pins;
 	}
 
 	public int CalculateScore () {
+
+		if (shot1Pins == 10) {
+			if(next == null){
+				return 20;
+			}
+
+			if (next.shot1Pins != -1 && next.shot1Pins != 10) {
+				if (next.shot2Pins != -1) {
+					
+					if (next.next != null && next.next.shot1Pins != -1) {
+						return 10 + next.shot1Pins + next.next.shot1Pins;
+					}
+
+					return -1;
+				}
+
+				return 10 + next.shot1Pins + next.shot2Pins;
+			}
+		}
+
+		if (shot1Pins + shot2Pins == 10) {
+			if(next == null){
+				return 15;
+			}
+
+			if (next.shot1Pins != -1) {
+				return 10 + next.shot1Pins + next.shot2Pins;
+			}
+
+			return -1;
+		}
+
+		if (shot2Pins == -1) {
+			return shot1Pins;
+		}
+
 		return shot1Pins + shot2Pins;
 	}
 

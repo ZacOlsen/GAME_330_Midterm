@@ -9,7 +9,7 @@ public class ScoreCalculator : MonoBehaviour {
 	[SerializeField] private int currentFrame = 0;
 	[SerializeField] private float timeBeforeScoreCount = 1.5f;
 
-	public const int NUM_OF_FRAMES = 10;
+	public const int NUM_OF_FRAMES = 5;
 	private GameObject scoreBoard;
 
 	private static BowlingFrame first;
@@ -34,21 +34,21 @@ public class ScoreCalculator : MonoBehaviour {
 			}
 		}
 
-		for (int i = 1; i < currentFrame; i++) {
-			GetScore (i);
-		}
+		UpdateScore ();
 
 		laneReset = GameObject.Find ("Lane Cleaner").GetComponent<LaneReset> ();
 	}
 
-	void GetScore (int frameNum) {
+	void UpdateScore () {
 
-		BowlingFrame frame = GetFrame (frameNum);
-		Transform trans = scoreBoard.transform.GetChild (frameNum - 1);
+		for (int frameNum = 1; frameNum <= NUM_OF_FRAMES; frameNum++) {
+			BowlingFrame frame = GetFrame (frameNum);
+			Transform trans = scoreBoard.transform.GetChild (frameNum - 1);
 
-		trans.GetChild (0).GetComponent<Text> ().text = frame.GetShot1 ();
-		trans.GetChild (1).GetComponent<Text> ().text = frame.GetShot2 ();
-		trans.GetChild (2).GetComponent<Text> ().text = "" + frame.CalculateScore ();
+			trans.GetChild (0).GetComponent<Text> ().text = frame.GetShot1 ();
+			trans.GetChild (1).GetComponent<Text> ().text = frame.GetShot2 ();
+			trans.GetChild (2).GetComponent<Text> ().text = "" + (frame.CalculateScore () >= 0 ? frame.CalculateScore()  + "" : "");
+		}
 	}
 
 	public void ReceivePinsDown (int pinsDown) {
@@ -58,6 +58,13 @@ public class ScoreCalculator : MonoBehaviour {
 		if (firstShot) {
 			frame.shot1Pins = pinsDown;
 			firstShot = false;
+
+			if (pinsDown == 10) {
+				currentFrame++;
+				SceneManager.LoadScene (currentFrame);
+				return;
+			}
+
 		} else {
 			frame.shot2Pins = pinsDown - frame.shot1Pins;
 			currentFrame++;
@@ -69,7 +76,7 @@ public class ScoreCalculator : MonoBehaviour {
 		Camera.main.transform.localPosition = Vector3.zero;
 		Camera.main.transform.localRotation = Quaternion.identity;
 
-		GetScore (currentFrame);
+		UpdateScore ();
 		bc.ResetShot ();
 	}
 
@@ -84,7 +91,7 @@ public class ScoreCalculator : MonoBehaviour {
 		return current;
 	}
 
-	private void StartLaneReset () {
+	public void StartLaneReset () {
 		laneReset.ClearLane ();
 	}
 
@@ -92,6 +99,7 @@ public class ScoreCalculator : MonoBehaviour {
 
 		if (col.CompareTag ("Ball")) {
 			Invoke ("StartLaneReset", timeBeforeScoreCount);
+			Destroy (col.GetComponent<BowlingBall> ());
 		}
 	}
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class LaneReset : MonoBehaviour {
 
 	[SerializeField] private float moveUpHeight = 2f;
+	[SerializeField] private Transform pinsCenter = null;
 	private float startY;
 
 	private List<GameObject> pins;
@@ -29,6 +30,10 @@ public class LaneReset : MonoBehaviour {
 	void FixedUpdate () {
 
 		if (triggerBox.enabled) {
+
+			Quaternion camRot = Camera.main.transform.rotation;
+			Camera.main.transform.LookAt (pinsCenter);
+			Camera.main.transform.rotation = Quaternion.Lerp(camRot, Camera.main.transform.rotation, .1f);
 
 			if (!topReached) {
 

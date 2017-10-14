@@ -9,8 +9,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Start Menu.unity
     guid: 94fc6c6919f5c7f40be81baf4ddb5791
   - enabled: 1
-    path: Assets/Scenes/Bowling Test.unity
-    guid: f2e442b0461027a4aa412810dd064d59
+    path: Assets/Scenes/Level 1.unity
+    guid: 8cab002204d3b014882e1b929aac67e3
   - enabled: 1
     path: Assets/Scenes/Level 2.unity
     guid: 821a2b092c198614fa9eff00691377ae
+  - enabled: 1
+    path: Assets/Scenes/Level 3.unity
+    guid: f2e442b0461027a4aa412810dd064d59

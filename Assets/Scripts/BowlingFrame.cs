@@ -9,7 +9,6 @@ public class BowlingFrame {
 	public readonly int frameNum = 0;
 
 	public BowlingFrame next;
-	private int score = 0;
 
 	public BowlingFrame (int frame) {
 		frameNum = frame;
@@ -48,17 +47,19 @@ public class BowlingFrame {
 				return 20;
 			}
 
-			if (next.shot1Pins != -1 && next.shot1Pins != 10) {
-				if (next.shot2Pins != -1) {
+			if (next.shot1Pins != -1) {
+				if (next.shot2Pins == -1) {
 					
 					if (next.next != null && next.next.shot1Pins != -1) {
 						return 10 + next.shot1Pins + next.next.shot1Pins;
 					}
 
-					return -1;
+				} else {
+
+					return 10 + next.shot1Pins + next.shot2Pins;
 				}
 
-				return 10 + next.shot1Pins + next.shot2Pins;
+				return -1;
 			}
 		}
 
@@ -79,9 +80,5 @@ public class BowlingFrame {
 		}
 
 		return shot1Pins + shot2Pins;
-	}
-
-	public int GetScore () {
-		return score;
 	}
 }

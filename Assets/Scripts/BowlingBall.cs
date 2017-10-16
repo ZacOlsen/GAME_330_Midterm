@@ -45,11 +45,13 @@ public class BowlingBall : MonoBehaviour {
 	void OnCollisionEnter (Collision col) {
 
 		if (!pinSoundPlayed && col.collider.CompareTag ("Pin")) {
+			source.volume = StartMenu.GetVolumeLevel ();
 			source.PlayOneShot (hitPins);
 			pinSoundPlayed = true;
 		}
 
 		if (col.collider.CompareTag ("Ground")) {
+			source.volume = StartMenu.GetVolumeLevel ();
 			source.PlayOneShot (hitGround);
 		}
 	}

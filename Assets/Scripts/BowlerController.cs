@@ -40,17 +40,19 @@ public class BowlerController : MonoBehaviour {
 	void Update () {
 
 		if (state == BowlerState.Moving) {
-			
-			if (right) {
-				transform.position += Vector3.right * moveSpeed * Time.deltaTime;
-				if (transform.position.x > startX + maxMoveDist) {
-					right = false;
-				}
+
+			if (maxMoveDist != 0) {
+				if (right) {
+					transform.position += Vector3.right * moveSpeed * Time.deltaTime;
+					if (transform.position.x > startX + maxMoveDist) {
+						right = false;
+					}
 				
-			} else {
-				transform.position -= Vector3.right * moveSpeed * Time.deltaTime;
-				if (transform.position.x < startX - maxMoveDist) {
-					right = true;
+				} else {
+					transform.position -= Vector3.right * moveSpeed * Time.deltaTime;
+					if (transform.position.x < startX - maxMoveDist) {
+						right = true;
+					}
 				}
 			}
 			

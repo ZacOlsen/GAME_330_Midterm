@@ -80,6 +80,19 @@ public class ScoreCalculator : MonoBehaviour {
 		bc.ResetShot ();
 	}
 
+	public static int GetTotalScore () {
+
+		int score = 0;
+		BowlingFrame frame = first;
+
+		while (frame != null) {
+			score += frame.CalculateScore ();
+			frame = frame.next;
+		}
+
+		return score;
+	}
+
 	private BowlingFrame GetFrame (int frame) {
 
 		BowlingFrame current = first;

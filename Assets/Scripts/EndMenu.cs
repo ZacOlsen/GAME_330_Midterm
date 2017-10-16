@@ -10,7 +10,8 @@ public class EndMenu : MonoBehaviour {
 
 	void Start () {
 		text = GameObject.Find ("Text").GetComponent<Text> ();
-		text.text = ScoreCalculator.GetTotalScore () + "";
+		text.text = "FINAL SCORE: " + ScoreCalculator.GetTotalScore ();
+		ScoreCalculator.ResetGame ();
 	}
 	
 	void Update () {

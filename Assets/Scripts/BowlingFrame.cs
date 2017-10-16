@@ -69,7 +69,7 @@ public class BowlingFrame {
 			}
 
 			if (next.shot1Pins != -1) {
-				return 10 + next.shot1Pins + next.shot2Pins;
+				return 10 + next.shot1Pins;
 			}
 
 			return -1;

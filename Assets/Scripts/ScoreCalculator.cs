@@ -93,6 +93,10 @@ public class ScoreCalculator : MonoBehaviour {
 		return score;
 	}
 
+	public static void ResetGame () {
+		first = null;
+	}
+
 	private BowlingFrame GetFrame (int frame) {
 
 		BowlingFrame current = first;

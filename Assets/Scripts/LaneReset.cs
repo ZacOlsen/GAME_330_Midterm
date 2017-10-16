@@ -91,7 +91,7 @@ public class LaneReset : MonoBehaviour {
 			pins.Add (col.gameObject);
 		}
 
-		col.transform.rotation = Quaternion.identity;
+	//	col.transform.rotation = Quaternion.identity;
 
 		col.transform.parent = transform;
 		col.GetComponent<Rigidbody> ().isKinematic = true;
